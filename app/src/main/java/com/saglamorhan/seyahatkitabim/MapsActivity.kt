@@ -3,6 +3,7 @@ package com.saglamorhan.seyahatkitabim
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Geocoder
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -17,6 +18,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import java.util.*
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -52,6 +54,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     val kullaniciKonum = LatLng(location.latitude,location.longitude)
                     mMap.addMarker(MarkerOptions().position(kullaniciKonum).title("Şu an buradasınız."))
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(kullaniciKonum,15f))
+
+                    //Konumun adresini almak
+                    val geocoder = Geocoder(this@MapsActivity, Locale.getDefault())
+                    try {
+                        val adresListesi = geocoder.getFromLocation(location.latitude,location.longitude,1)
+                        if (adresListesi != null && adresListesi.size>0){
+                            println(""+adresListesi.get(0).toString())
+                        }
+
+                    }catch (e:Exception){
+                        e.printStackTrace()
+                    }
                 }
 
             }
