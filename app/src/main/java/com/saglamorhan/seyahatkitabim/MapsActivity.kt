@@ -48,6 +48,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             override fun onLocationChanged(location: Location?) {
 
                 if (location != null){
+                    mMap.clear()
                     val kullaniciKonum = LatLng(location.latitude,location.longitude)
                     mMap.addMarker(MarkerOptions().position(kullaniciKonum).title("Şu an buradasınız."))
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(kullaniciKonum,15f))
@@ -69,6 +70,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             //izin verilmemisse calisir
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),1)
         }else{
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,1,1f,locationListener)
+            val sonBilinenKonum = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+            if (sonBilinenKonum != null){
+
+                val sonBilinenKonumLatLng = LatLng(sonBilinenKonum.latitude,sonBilinenKonum.longitude)
+                mMap.addMarker(MarkerOptions().position(sonBilinenKonumLatLng).title("Buradasınız"))
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sonBilinenKonumLatLng,15f))
+            }
 
         }
     }
