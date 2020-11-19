@@ -9,6 +9,7 @@ import android.location.LocationListener
 import android.location.LocationManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
@@ -38,6 +39,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+        mMap.setOnMapLongClickListener(uzunTiklamaListener)
 
         // Add a marker in Sydney and move the camera
         /*
@@ -109,5 +111,44 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    val uzunTiklamaListener = GoogleMap.OnMapLongClickListener { p0 ->
+        mMap.clear()
+        val geocoder = Geocoder(this, Locale.getDefault())
+        if (p0 != null){
+            if (p0 != null){
+
+                var address = ""
+
+                try {
+
+                    val addressList = geocoder.getFromLocation(p0!!.latitude,p0.longitude,1)
+                    if (addressList != null && addressList.size > 0){
+
+                        if (addressList[0].thoroughfare != null){
+                            address+= addressList[0].thoroughfare
+                            address+=" "
+                        }
+                        if (addressList[0].subThoroughfare != null){
+                            address+= addressList[0].subThoroughfare
+                            address+=" "
+                        }
+
+                    }
+
+                }catch (e:Exception){
+                    e.printStackTrace()
+                }
+
+                mMap.addMarker(MarkerOptions().position(p0).title(address))
+
+            }else{
+                Toast.makeText(applicationContext,"Try Again",Toast.LENGTH_LONG).show()
+            }
+
+
+
+        }
     }
 }
